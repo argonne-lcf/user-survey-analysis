@@ -27,18 +27,20 @@ ALCF_PRIMER = """The Argonne Leadership Computing Facility (ALCF) is a U.S. Depa
 
 def parse_arguments():
    """Parse command line arguments."""
-   parser = argparse.ArgumentParser(description='Analyze user feedback from Excel file')
+   parser = argparse.ArgumentParser(description='Analyze open-ended user-feedback from CSV file, producing another CSV file with the results.')
    parser.add_argument('--input', default='survey_responses.csv', help='Input CSV file with survey responses')
    parser.add_argument('--output', default='analysis_results.csv', help='Output CSV file for analysis results')
+   parser.add_argument('--llm-config', default='data/llm_questions.json', help='Path to LLM questions that can be asked for each Q&A pair, in json format')
+   parser.add_argument('--text-questions', default='data/text_questions.json', help='Path to text questions that were asked of the users and which LLM questions should be asked for each response, in json format')
    parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
                       help='Set the logging level')
    return parser.parse_args()
 
-def load_config_files():
+def load_config_files(llm_config_path, text_config_path):
    """Load the LLM questions and text questions configuration files."""
-   with open('data/llm_questions.json', 'r') as f:
+   with open(llm_config_path, 'r') as f:
       llm_questions = json.load(f)
-   with open('data/text_questions.json', 'r') as f:
+   with open(text_config_path, 'r') as f:
       text_questions = json.load(f)
    return llm_questions, text_questions
 
@@ -95,7 +97,7 @@ def main():
    logging.getLogger('httpx').setLevel(logging.WARNING)
    
    # Load configuration files
-   llm_questions, text_questions = load_config_files()
+   llm_questions, text_questions = load_config_files(args.llm_config, args.text_questions)
    
    # Initialize OpenAI client
    client = OpenAI(

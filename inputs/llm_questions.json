@@ -1,0 +1,27 @@
+{
+   "sentiment": {
+      "text": "Given the survey questions and the user's response, classify the response with the given categories.",
+      "categories": ["positive", "neutral", "negative"],
+      "answer_format": "Please only respond with the category that best describes the user's response and no other text."
+   },
+   "topic": {
+      "text": "Given the survey questions and the user's response, which topic(s) do you think the feedback is most relavent?",
+      "categories": ["operations", "software", "environment", "documentation", "support", "training", "other"],
+      "answer_format": "Please only respond with the topic or topics from the allowed categories that you think the feedback is most relavent to. Use a comma separated list for multiple topics."
+   },
+   "machine": {
+      "text": "Given the survey questions and the user's response, to which supercomputer is the user referring?",
+      "categories": ["polaris", "aurora", "theta", "frontier", "sophia", "both", "neither"],
+      "answer_format": "Please only respond with the supercomputer from the allowed categories that you think the user is referring to. Use a comma separated list for multiple supercomputers."
+   },
+   "feedback": {
+      "text": "Given the survey questions and the user's response, please provide a tone of response that is most appropriate for the question.",
+      "categories": ["complaint", "suggestion", "other"],
+      "answer_format": "Please only respond with the feedback category that you think is most appropriate for the question."
+   },
+   "emotion": {
+      "text": "Given the survey questions and the user's response, please characterize the emotional style of the response.",
+      "categories": ["pleased", "happy", "sad", "angry", "frustrated", "indifferent", "satisfied", "other"],
+      "answer_format": "Please only respond with an emotion from the allowed categories that you think is most appropriate for the question."
+   }
+}

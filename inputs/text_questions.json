@@ -2,61 +2,61 @@
    {
       "question_number": "Q3.1",
       "question_text": "Please comment on ALCF's role in the progress of your science or engineering project.",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion", "impact_area"]
    },
    {
       "question_number": "Q9.1",
       "question_text": "Regarding user services provided by ALCF, do you agree or disagree with the following statements? There was adequate communication regarding the account setup or project onboarding process. The account website has clear instructions and is intuitive. The login token was provided in a timely manner.",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion"]
    },
    {
       "question_number": "Q10.1",
       "question_text": "Please comment on the effectiveness of ALCF user support services.",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion", "actionability", "resolution_status", "specificity"]
    },
    {
       "question_number": "Q18.2",
       "question_text": "How can ALCF help improve your use of workflow tools at the ALCF?",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion", "actionability", "specificity"]
    },
    {
       "question_number": "Q19.1",
       "question_text": "Please comment on the ALCF's operations, infrastructure and software.",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion"]
    },
    {
       "question_number": "Q22.1",
       "question_text": "How can ALCF teams better support your project needs?",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion", "actionability", "specificity"]
    },
    {
       "question_number": "Q25",
       "question_text": "Are there any topics you would like to see covered in trainings in the coming year?",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion"]
    },
    {
       "question_number": "Q26.1",
       "question_text": "Please provide comments on ALCF's problem resolution support.",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion", "resolution_status", "actionability"]
    },
    {
       "question_number": "Q28.3",
       "question_text": "Please provide any comments you have about why performance tools may or may not have been helpful to you.",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion"]
    },
    {
       "question_number": "Q31.1",
-   "question_text": "Please comment on ALCF's software development environment.",
-   "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "question_text": "Please comment on ALCF's software development environment.",
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion"]
    },
    {
       "question_number": "Q32",
       "question_text": "Please comment on your overall experience at the ALCF.",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion", "impact_area"]
    },
    {
       "question_number": "Q33",
       "question_text": "Please provide suggestions for ALCF features or services that will be useful to you in the next 2-3 years:",
-      "llm_questions": [ "sentiment", "topic", "machine", "feedback", "emotion" ]
+      "llm_questions": ["sentiment", "topic", "machine", "feedback", "emotion", "actionability", "impact_area"]
    }
 ]

@@ -2,26 +2,46 @@
    "sentiment": {
       "text": "Given the survey questions and the user's response, classify the response with the given categories.",
       "categories": ["positive", "neutral", "negative"],
-      "answer_format": "Please only respond with the category that best describes the user's response and no other text."
+      "answer_format": "Please only respond with the category that best describes the user's response and no other text. No comment or suggestions should be considered positive."
    },
    "topic": {
       "text": "Given the survey questions and the user's response, which topic(s) do you think the feedback is most relavent?",
-      "categories": ["operations", "software", "environment", "documentation", "support", "training", "other"],
+      "categories": ["operations", "software", "environment", "documentation", "support", "training", "scheduling", "other", "none"],
       "answer_format": "Please only respond with the topic or topics from the allowed categories that you think the feedback is most relavent to. Use a comma separated list for multiple topics."
    },
    "machine": {
       "text": "Given the survey questions and the user's response, to which supercomputer is the user referring?",
-      "categories": ["polaris", "aurora", "theta", "frontier", "sophia", "both", "neither"],
-      "answer_format": "Please only respond with the supercomputer from the allowed categories that you think the user is referring to. Use a comma separated list for multiple supercomputers."
+      "categories": ["polaris", "aurora", "theta", "sophia", "none"],
+      "answer_format": "Please only respond with the supercomputer from the allowed categories that you think the user is referring to or 'none'. Use a comma separated list for multiple supercomputers."
    },
    "feedback": {
       "text": "Given the survey questions and the user's response, please provide a tone of response that is most appropriate for the question.",
-      "categories": ["complaint", "suggestion", "other"],
+      "categories": ["complaint", "suggestion", "compliment", "other"],
       "answer_format": "Please only respond with the feedback category that you think is most appropriate for the question."
    },
    "emotion": {
       "text": "Given the survey questions and the user's response, please characterize the emotional style of the response.",
-      "categories": ["pleased", "happy", "sad", "angry", "frustrated", "indifferent", "satisfied", "other"],
+      "categories": ["happy", "satisfied", "indifferent", "frustrated", "sad", "angry", "other"],
       "answer_format": "Please only respond with an emotion from the allowed categories that you think is most appropriate for the question."
+   },
+   "actionability": {
+      "text": "Given the survey questions and the user's response, classify the feedback based on how actionable it is.",
+      "categories": ["immediate", "long-term", "non-actionable"],
+      "answer_format": "Please only respond with the category that best describes the feedback and no other text."
+   },
+   "specificity": {
+      "text": "Given the survey questions and the user's response, does the feedback contain specific examples or general comments?",
+      "categories": ["specific", "general"],
+      "answer_format": "Please only respond with 'specific' or 'general'."
+   },
+   "impact_area": {
+      "text": "Given the survey questions and the user's response, which area of the ALCF experience does the feedback primarily impact?",
+      "categories": ["user_experience", "science_output", "administration", "other"],
+      "answer_format": "Please only respond with the area that best describes the impact of the feedback."
+   },
+   "resolution_status": {
+      "text": "Given the survey questions and the user's response, does the feedback suggest that a problem was resolved or remains unresolved?",
+      "categories": ["resolved", "unresolved", "not_a_problem"],
+      "answer_format": "Please only respond with one of the allowed categories and no other text."
    }
 }

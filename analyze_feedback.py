@@ -28,10 +28,10 @@ ALCF_PRIMER = """The Argonne Leadership Computing Facility (ALCF) is a U.S. Depa
 def parse_arguments():
    """Parse command line arguments."""
    parser = argparse.ArgumentParser(description='Analyze open-ended user-feedback from CSV file, producing another CSV file with the results.')
-   parser.add_argument('--input', default='survey_responses.csv', help='Input CSV file with survey responses')
-   parser.add_argument('--output', default='analysis_results.csv', help='Output CSV file for analysis results')
-   parser.add_argument('--llm-config', default='data/llm_questions.json', help='Path to LLM questions that can be asked for each Q&A pair, in json format')
-   parser.add_argument('--text-questions', default='data/text_questions.json', help='Path to text questions that were asked of the users and which LLM questions should be asked for each response, in json format')
+   parser.add_argument('-i', '--input', default='survey_responses.csv', help='Input CSV file with survey responses')
+   parser.add_argument('-o', '--output', default='analysis_results.csv', help='Output CSV file for analysis results')
+   parser.add_argument('-l', '--llm-config', default='data/llm_questions.json', help='Path to LLM questions that can be asked for each Q&A pair, in json format')
+   parser.add_argument('-t', '--text-questions', default='data/text_questions.json', help='Path to text questions that were asked of the users and which LLM questions should be asked for each response, in json format')
    parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
                       help='Set the logging level')
    return parser.parse_args()
@@ -117,9 +117,15 @@ def main():
    
    # Get all possible LLM question types for column names
    all_llm_types = list(llm_questions.keys())
+
+   row_counter = 0
+   total_rows = len(responses_df)
    
    # Process each response
    for _, row in responses_df.iterrows():
+      row_counter += 1
+      if row_counter % 10 == 0:
+         logger.info(f"Processed {row_counter} of {total_rows} rows")
       question_number = row['question_number']
       question_text = row['question_text']
       user_response = row['user_response_text']

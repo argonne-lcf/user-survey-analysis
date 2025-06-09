@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Generate analysis plots from CSV data')
-    parser.add_argument('--input', type=str, default='analysis_results.csv',
+    parser.add_argument('-i', '--input', type=str, default='analysis_results.csv',
                       help='Input CSV file path (default: analysis_results.csv)')
-    parser.add_argument('--output-dir', type=str, default='plots',
+    parser.add_argument('-o', '--output-dir', type=str, default='plots',
                       help='Output directory for plots (default: plots)')
     return parser.parse_args()
 
@@ -135,6 +135,9 @@ def main():
     logger.info(f"Reading input file: {args.input}")
     df = pd.read_csv(args.input)
     
+    # Create a mapping of question numbers to their text
+    question_texts = df[['question_number', 'question_text']].drop_duplicates().set_index('question_number')['question_text'].to_dict()
+    
     # Set up the plotting style
     plt.style.use('seaborn-v0_8')
     sns.set_palette("husl")
@@ -145,47 +148,106 @@ def main():
         'topic': 'comma_separated',
         'machine': 'comma_separated',
         'feedback': 'regular',
-        'emotion': 'regular'
+        'emotion': 'regular',
+        'actionability': 'regular',
+        'specificity': 'regular',
+        'impact_area': 'regular',
+        'resolution_status': 'regular'
     }
     
-    # Create individual plots
+    # Get unique question numbers
+    question_numbers = df['question_number'].unique()
+    
+    # Create plots for each question
+    for question in question_numbers:
+        logger.info(f"Generating plots for question: {question}")
+        question_df = df[df['question_number'] == question]
+        question_text = question_texts[question]
+        
+        # Create a subdirectory for this question
+        question_dir = output_dir / question
+        question_dir.mkdir(exist_ok=True)
+        
+        # Create individual plots for this question
+        for col, plot_type in columns_to_plot.items():
+            logger.info(f"Generating plot for {col} in question {question}")
+            title = f'{col.title()} Distribution\n{question}: {question_text}'
+            if plot_type == 'comma_separated':
+                fig = plot_comma_separated_histogram(question_df[col], title)
+            else:
+                fig = plot_regular_histogram(question_df[col], title)
+            
+            # Save individual plot
+            output_path = question_dir / f'{col}_distribution.png'
+            fig.savefig(output_path, bbox_inches='tight', dpi=300)
+            plt.close(fig)
+            logger.info(f"Saved plot to: {output_path}")
+        
+        # Create 2D histograms for this question
+        correlations = [
+            ('topic', 'emotion', 'Topic vs Emotion'),
+            ('sentiment', 'emotion', 'Sentiment vs Emotion'),
+            ('feedback', 'actionability', 'Feedback Type vs Actionability'),
+            ('impact_area', 'resolution_status', 'Impact Area vs Resolution Status'),
+            ('specificity', 'actionability', 'Specificity vs Actionability'),
+            ('machine', 'topic', 'Machine vs Topic')
+        ]
+        
+        for col1, col2, title_prefix in correlations:
+            logger.info(f"Generating 2D histogram between {col1} and {col2} for question {question}")
+            title = f'{title_prefix} Distribution\n{question}: {question_text}'
+            fig = plot_2d_histogram(question_df, col1, col2, title)
+            output_path = question_dir / f'{col1}_{col2}_2d_histogram.png'
+            fig.savefig(output_path, bbox_inches='tight', dpi=300)
+            plt.close(fig)
+            logger.info(f"Saved 2D histogram to: {output_path}")
+        
+        # Create combined plot for this question
+        logger.info(f"Generating combined plot for question {question}")
+        fig, axes = plt.subplots(len(columns_to_plot), 1, figsize=(12, 4*len(columns_to_plot)))
+        fig.suptitle(f'Analysis Results Distribution\n{question}: {question_text}', fontsize=16, y=1.02)
+        
+        for i, (col, plot_type) in enumerate(columns_to_plot.items()):
+            if plot_type == 'comma_separated':
+                plot_comma_separated_histogram(question_df[col], f'{col.title()} Distribution')
+            else:
+                plot_regular_histogram(question_df[col], f'{col.title()} Distribution')
+        
+        plt.tight_layout()
+        # combined_output_path = question_dir / 'analysis_histograms.png'
+        # plt.savefig(combined_output_path, bbox_inches='tight', dpi=300)
+        # plt.close()
+        # logger.info(f"Saved combined plot to: {combined_output_path}")
+    
+    # Create overall plots (across all questions)
+    logger.info("Generating overall plots across all questions")
+    overall_dir = output_dir / 'overall'
+    overall_dir.mkdir(exist_ok=True)
+    
+    # Create individual plots for overall data
     for col, plot_type in columns_to_plot.items():
-        logger.info(f"Generating plot for {col}")
+        logger.info(f"Generating overall plot for {col}")
+        title = f'{col.title()} Distribution - Overall (All Questions)'
         if plot_type == 'comma_separated':
-            fig = plot_comma_separated_histogram(df[col], f'{col.title()} Distribution')
+            fig = plot_comma_separated_histogram(df[col], title)
         else:
-            fig = plot_regular_histogram(df[col], f'{col.title()} Distribution')
+            fig = plot_regular_histogram(df[col], title)
         
         # Save individual plot
-        output_path = output_dir / f'{col}_distribution.png'
+        output_path = overall_dir / f'{col}_distribution.png'
         fig.savefig(output_path, bbox_inches='tight', dpi=300)
         plt.close(fig)
         logger.info(f"Saved plot to: {output_path}")
     
-    # Create 2D histogram between topic and emotion
-    logger.info("Generating 2D histogram between topic and emotion")
-    fig = plot_2d_histogram(df, 'topic', 'emotion', 'Topic vs Emotion Distribution')
-    output_path = output_dir / 'topic_emotion_2d_histogram.png'
-    fig.savefig(output_path, bbox_inches='tight', dpi=300)
-    plt.close(fig)
-    logger.info(f"Saved 2D histogram to: {output_path}")
-    
-    # Create combined plot
-    logger.info("Generating combined plot")
-    fig, axes = plt.subplots(len(columns_to_plot), 1, figsize=(12, 4*len(columns_to_plot)))
-    fig.suptitle('Analysis Results Distribution', fontsize=16, y=1.02)
-    
-    for i, (col, plot_type) in enumerate(columns_to_plot.items()):
-        if plot_type == 'comma_separated':
-            plot_comma_separated_histogram(df[col], f'{col.title()} Distribution')
-        else:
-            plot_regular_histogram(df[col], f'{col.title()} Distribution')
-    
-   #  plt.tight_layout()
-   #  combined_output_path = output_dir / 'analysis_histograms.png'
-   #  plt.savefig(combined_output_path, bbox_inches='tight', dpi=300)
-   #  plt.close()
-   #  logger.info(f"Saved combined plot to: {combined_output_path}")
+    # Create overall 2D histograms
+    for col1, col2, title_prefix in correlations:
+        logger.info(f"Generating overall 2D histogram between {col1} and {col2}")
+        title = f'{title_prefix} Distribution - Overall (All Questions)'
+        fig = plot_2d_histogram(df, col1, col2, title)
+        output_path = overall_dir / f'{col1}_{col2}_2d_histogram.png'
+        fig.savefig(output_path, bbox_inches='tight', dpi=300)
+        plt.close(fig)
+        logger.info(f"Saved 2D histogram to: {output_path}")
 
 if __name__ == '__main__':
     main() 

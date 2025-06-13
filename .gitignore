@@ -2,3 +2,14 @@
 venv/
 .cursor/
 *.xlsx
+*.csv
+*.png
+*.zip
+*.pdf
+.DS_Store
+*.pptx
+*/*.md
+*/*/*.md
+*/*.txt
+*/*/*.txt
+*/*/*/*.txt

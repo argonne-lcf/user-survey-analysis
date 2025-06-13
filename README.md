@@ -66,6 +66,60 @@ options:
                         Set the logging level
 ```
 
+# Plot results
+
+The `plot_analysis.py` makes plots from the input analysis CSV file. It will create a directory with overview plots, then plots for each question.
+
+```shell
+usage: plot_analysis.py [-h] [-i INPUT] [-o OUTPUT_DIR]
+
+Generate analysis plots from CSV data
+
+options:
+  -h, --help            show this help message and exit
+  -i, --input INPUT     Input CSV file path (default: analysis_results.csv)
+  -o, --output-dir OUTPUT_DIR
+                        Output directory for plots (default: plots)
+```
+
+# Extract Survey Analysis for Review
+
+The `extract_survey_data.py` script is intended to organize the survey responses into pieces that make sense for review. It will generate a subfolder that includes folders for each question. In each question subfolder there will be all the responses in CSV, then all the negative responses in CSV and a CSV of negative responses separated by topic.
+
+```shell
+usage: extract_survey_data.py [-h] -e EXCEL_FILE [-o OUTPUT_FILE] -t TEXT_QUESTIONS [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+
+Extract survey data from Excel file to CSV
+
+options:
+  -h, --help            show this help message and exit
+  -e, --excel-file EXCEL_FILE
+                        Path to the Excel file containing survey data
+  -o, --output-file OUTPUT_FILE
+                        Path to the output CSV file
+  -t, --text-questions TEXT_QUESTIONS
+                        Path to JSON file containing list of text questions to process
+  --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+                        Set the logging level
+
+```
+
+# Summarize the Feedback in Markdown
+
+The `summarize_feedback.py` script takes an input GLOB, e.g. `-i "question_analysis/question*/all_negative_responses.csv"`, and for each file it finds it will output a markdown file with the same path and basename that summarizes the input file responses. It provides a summary and the top three actionable things to address the comments.
+
+```shell
+usage: summarize_feedback.py [-h] -i INPUT [--log-level {DEBUG,INFO,WARNING,ERROR}]
+
+Analyze and summarize user feedback from CSV files.
+
+options:
+  -h, --help            show this help message and exit
+  -i, --input INPUT     Input glob pattern for CSV files with user feedback (e.g., "data/*.csv")
+  --log-level {DEBUG,INFO,WARNING,ERROR}
+                        Set the logging level
+```
+
 # Input JSON files: `text_questions.json` and `llm_questions.json`
 
 The `text_question.json` file should contain a list of dictionaries, with each entry corresponding to a question that was asked of the user that would yield an open-eded response, e.g.:

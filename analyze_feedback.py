@@ -47,13 +47,18 @@ def load_config_files(llm_config_path, text_config_path):
 def validate_llm_response(response, categories):
    """Validate that the LLM response matches one of the expected categories."""
    if isinstance(response, str):
-      response = response.strip().lower()
-      if response in categories:
+      response = response.strip()
+      # Convert categories to lowercase for case-insensitive comparison
+      categories_lower = [cat.lower() for cat in categories]
+      response_lower = response.lower()
+      
+      if response_lower in categories_lower:
+         # Return the original response (preserving case)
          return response
       # Check if response is a comma-separated list of categories
       if ',' in response:
          responses = [r.strip().lower() for r in response.split(',')]
-         if all(r in categories for r in responses):
+         if all(r in categories_lower for r in responses):
             return response
    return None
 
@@ -73,8 +78,7 @@ Allowed categories: {', '.join(llm_question_config['categories'])}
    try:
       response = client.chat.completions.create(
          model=os.environ.get("OPENAI_MODEL_NAME", "gpt-4"),
-         messages=[{"role": "user", "content": prompt}],
-         temperature=0.1  # Low temperature for more consistent responses
+         messages=[{"role": "user", "content": prompt}]
       )
       result = response.choices[0].message.content.strip()
       
@@ -82,11 +86,49 @@ Allowed categories: {', '.join(llm_question_config['categories'])}
       validated_result = validate_llm_response(result, llm_question_config['categories'])
       if validated_result is None:
          logger.warning(f"Invalid LLM response: {result}; expected categories: {llm_question_config['categories']}")
-         return "INVALID_RESPONSE"
+         
+         # Retry once with the invalid response included in the prompt
+         retry_prompt = f"""{ALCF_PRIMER}
+
+Survey Question: {question_text}
+User Response: {user_response}
+
+{llm_question_config['text']}
+
+Allowed categories: {', '.join(llm_question_config['categories'])}
+
+{llm_question_config['answer_format']}
+
+Note: Your previous response "{result}" was not one of the allowed categories. Please choose from the allowed categories only."""
+         
+         try:
+            retry_response = client.chat.completions.create(
+               model=os.environ.get("OPENAI_MODEL_NAME", "gpt-4"),
+               messages=[{"role": "user", "content": retry_prompt}],
+               temperature=0.1
+            )
+            retry_result = retry_response.choices[0].message.content.strip()
+            
+            # Validate the retry response
+            validated_retry_result = validate_llm_response(retry_result, llm_question_config['categories'])
+            if validated_retry_result is None:
+               logger.warning(f"Retry also failed with invalid response: {retry_result}; expected categories: {llm_question_config['categories']}")
+               return "INVALID_RESPONSE"
+            return validated_retry_result
+         except Exception as retry_e:
+            logger.error(f"Error during retry: {str(retry_e)}")
+            return "INVALID_RESPONSE"
+      
       return validated_result
    except Exception as e:
       logger.error(f"Error analyzing response: {str(e)}")
       return "ERROR"
+
+def save_results(results, output_file, all_llm_types):
+   """Save results to CSV file."""
+   results_df = pd.DataFrame(results)
+   results_df.to_csv(output_file, index=False)
+   logger.info(f"Results saved to {output_file}")
 
 def main():
    # Parse command line arguments
@@ -126,6 +168,9 @@ def main():
       row_counter += 1
       if row_counter % 10 == 0:
          logger.info(f"Processed {row_counter} of {total_rows} rows")
+         # Save results periodically
+         save_results(results, args.output, all_llm_types)
+      
       question_number = row['question_number']
       question_text = row['question_text']
       user_response = row['user_response_text']
@@ -160,10 +205,9 @@ def main():
       
       results.append(result)
    
-   # Save results to CSV
-   results_df = pd.DataFrame(results)
-   results_df.to_csv(args.output, index=False)
-   logger.info(f"Analysis complete. Results saved to {args.output}")
+   # Save final results to CSV
+   save_results(results, args.output, all_llm_types)
+   logger.info(f"Analysis complete. Final results saved to {args.output}")
 
 if __name__ == "__main__":
    main() 

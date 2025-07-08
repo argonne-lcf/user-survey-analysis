@@ -40,8 +40,11 @@ def plot_comma_separated_histogram(series, title, figsize=(10, 6)):
     bars = plt.bar(value_counts.keys(), value_counts.values())
     
     # Customize the plot
-    plt.title(title, pad=20)
-    plt.xticks(rotation=45, ha='right')
+    plt.title(title, pad=20, fontsize=20)
+    plt.xticks(rotation=45, ha='right', fontsize=20)
+    plt.yticks(fontsize=20)
+    plt.xlabel('Categories', fontsize=20)
+    plt.ylabel('Count', fontsize=20)
     plt.tight_layout()
     
     # Add value labels on top of bars
@@ -59,8 +62,11 @@ def plot_regular_histogram(series, title, figsize=(10, 6)):
     value_counts = series.value_counts()
     bars = plt.bar(value_counts.index, value_counts.values)
     
-    plt.title(title, pad=20)
-    plt.xticks(rotation=45, ha='right')
+    plt.title(title, pad=20, fontsize=20)
+    plt.xticks(rotation=45, ha='right', fontsize=20)
+    plt.yticks(fontsize=20)
+    plt.xlabel('Categories', fontsize=20)
+    plt.ylabel('Count', fontsize=20)
     plt.tight_layout()
     
     # Add value labels on top of bars
@@ -114,11 +120,11 @@ def plot_2d_histogram(df, col1, col2, title, figsize=(12, 8)):
                 fmt='.0f',
                 cbar_kws={'label': 'Count'})
     
-    plt.title(title, pad=20)
-    plt.xlabel(col1.title())
-    plt.ylabel(col2.title())
-    plt.xticks(rotation=45, ha='right')
-    plt.yticks(rotation=0)
+    plt.title(title, pad=20, fontsize=20)
+    plt.xlabel(col1.title(), fontsize=20)
+    plt.ylabel(col2.title(), fontsize=20)
+    plt.xticks(rotation=45, ha='right', fontsize=20)
+    plt.yticks(rotation=0, fontsize=20)
     plt.tight_layout()
     
     return plt.gcf()
@@ -134,6 +140,14 @@ def main():
     # Read the CSV file
     logger.info(f"Reading input file: {args.input}")
     df = pd.read_csv(args.input)
+    
+    # Normalize classification columns to lowercase to avoid case inconsistencies in plots
+    classification_columns = ['sentiment', 'topic', 'machine', 'feedback', 'emotion', 
+                            'actionability', 'specificity', 'ticket_status', 'software_topic']
+    for col in classification_columns:
+        if col in df.columns:
+            df[col] = df[col].astype(str).str.lower()
+    logger.info("Normalized classification columns to lowercase")
     
     # Create a mapping of question numbers to their text
     question_texts = df[['question_number', 'question_text']].drop_duplicates().set_index('question_number')['question_text'].to_dict()
@@ -151,8 +165,8 @@ def main():
         'emotion': 'regular',
         'actionability': 'regular',
         'specificity': 'regular',
-        'impact_area': 'regular',
-        'resolution_status': 'regular'
+        'ticket_status': 'regular',
+        'software_topic': 'comma_separated'
     }
     
     # Get unique question numbers
@@ -188,7 +202,6 @@ def main():
             ('topic', 'emotion', 'Topic vs Emotion'),
             ('sentiment', 'emotion', 'Sentiment vs Emotion'),
             ('feedback', 'actionability', 'Feedback Type vs Actionability'),
-            ('impact_area', 'resolution_status', 'Impact Area vs Resolution Status'),
             ('specificity', 'actionability', 'Specificity vs Actionability'),
             ('machine', 'topic', 'Machine vs Topic')
         ]
@@ -205,7 +218,7 @@ def main():
         # Create combined plot for this question
         logger.info(f"Generating combined plot for question {question}")
         fig, axes = plt.subplots(len(columns_to_plot), 1, figsize=(12, 4*len(columns_to_plot)))
-        fig.suptitle(f'Analysis Results Distribution\n{question}: {question_text}', fontsize=16, y=1.02)
+        fig.suptitle(f'Analysis Results Distribution\n{question}: {question_text}', fontsize=20, y=1.02)
         
         for i, (col, plot_type) in enumerate(columns_to_plot.items()):
             if plot_type == 'comma_separated':

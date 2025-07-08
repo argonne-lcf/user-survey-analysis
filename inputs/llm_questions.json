@@ -2,16 +2,16 @@
    "sentiment": {
       "text": "Given the survey questions and the user's response, classify the response with the given categories.",
       "categories": ["positive", "neutral", "negative"],
-      "answer_format": "Please only respond with the category that best describes the user's response and no other text. No comment or suggestions should be considered positive."
+      "answer_format": "Please only respond with the category that best describes the user's response and no other text. No comment or suggestions should be considered positive. If the user includes a compliment but also a complaint, the sentiment should be negative."
    },
    "topic": {
-      "text": "Given the survey questions and the user's response, which topic(s) do you think the feedback is most relavent?",
-      "categories": ["operations", "software", "environment", "documentation", "support", "training", "scheduling", "other", "none"],
-      "answer_format": "Please only respond with the topic or topics from the allowed categories that you think the feedback is most relavent to. Use a comma separated list for multiple topics."
+      "text": "Given the survey questions and the user's response, which topic(s) do you think the feedback is most relevant?",
+      "categories": ["operations", "software", "environment", "documentation", "support", "training", "scheduling", "communication", "storage", "allocation", "other", "none"],
+      "answer_format": "Please only respond with the topic or topics from the allowed categories that you think the feedback is most relevant to. Use a comma separated list for multiple topics."
    },
    "machine": {
-      "text": "Given the survey questions and the user's response, to which supercomputer is the user referring?",
-      "categories": ["polaris", "aurora", "theta", "sophia", "none"],
+      "text": "Given the survey questions and the user's response, which supercomputer is mentioned in the response? Only name supercomputers that are explicitly mentioned in the response.",
+      "categories": ["polaris", "aurora", "theta", "sophia", "aitestbeds", "none"],
       "answer_format": "Please only respond with the supercomputer from the allowed categories that you think the user is referring to or 'none'. Use a comma separated list for multiple supercomputers."
    },
    "feedback": {
@@ -25,23 +25,23 @@
       "answer_format": "Please only respond with an emotion from the allowed categories that you think is most appropriate for the question."
    },
    "actionability": {
-      "text": "Given the survey questions and the user's response, classify the feedback based on how actionable it is.",
-      "categories": ["immediate", "long-term", "non-actionable"],
+      "text": "Given the survey questions and the user's response, classify the feedback based on how actionable it is. Actionable feedback would have specific examples or suggestions for improvement. Here are actionable examples: 'It is unclear how to use containers on Polaris', 'My support request was not resolved for many days', 'A tutorial on DAOS would be helpful'. Here are non-actionable examples: 'The documentation is not clear.', 'My jobs take too long to run', 'The queue is busy'.",
+      "categories": ["actionable", "non-actionable"],
       "answer_format": "Please only respond with the category that best describes the feedback and no other text."
    },
    "specificity": {
-      "text": "Given the survey questions and the user's response, does the feedback contain specific examples or general comments?",
+      "text": "Given the survey questions and the user's response, does the feedback contain specific examples or general comments? Example general comments: 'The documentation is not clear.', 'My jobs take too long to run', 'The queue is busy'. Example specific examples: 'It is unclear how to use containers on Polaris', 'My support request was not respolved for many days', 'A tutorial on DAOS would ba helpful'.",
       "categories": ["specific", "general"],
       "answer_format": "Please only respond with 'specific' or 'general'."
    },
-   "impact_area": {
-      "text": "Given the survey questions and the user's response, which area of the ALCF experience does the feedback primarily impact?",
-      "categories": ["user_experience", "science_output", "administration", "other"],
-      "answer_format": "Please only respond with the area that best describes the impact of the feedback."
+   "ticket_status": {
+      "text": "Given the survey questions and the user's response, if the user refers to a support ticket or support interaction, decide if the user experienced a 'timely' response, or a 'delayed' response. If the user is not referring to a support ticket or support interaction, respond 'na' for not applicable.",
+      "categories": ["timely", "delayed", "na"],
+      "answer_format": "Please only respond with 'timely', 'delayed', or 'na'."
    },
-   "resolution_status": {
-      "text": "Given the survey questions and the user's response, does the feedback suggest that a problem was resolved or remains unresolved?",
-      "categories": ["resolved", "unresolved", "not_a_problem"],
-      "answer_format": "Please only respond with one of the allowed categories and no other text."
+   "software_topic": {
+      "text": "Given the survey questions and the user's response, if the user refers to a software topic, please classify the software topic. If the user is not referring to a software topic, respond 'na' for not applicable.",
+      "categories": ["containers", "DAOS", "PBS", "conda", "python", "modules", "compilers", "MPI", "OpenMP", "DDP", "Globus", "CPP", "debuggers", "profilers", "other", "na"],
+      "answer_format": "Please only respond with the software topic from the allowed categories that you think is most appropriate for the question or 'na' for not applicable. Use a comma separated list for multiple software topics."
    }
 }

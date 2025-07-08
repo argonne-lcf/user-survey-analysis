@@ -10,6 +10,14 @@ def split_analysis_by_question(input_file='analysis_results.csv', output_dir='qu
     # Read the CSV file
     df = pd.read_csv(input_file)
     
+    # Normalize classification columns to lowercase to avoid case inconsistencies in plots
+    classification_columns = ['sentiment', 'topic', 'machine', 'feedback', 'emotion', 
+                            'actionability', 'specificity', 'ticket_status', 'software_topic']
+    for col in classification_columns:
+        if col in df.columns:
+            df[col] = df[col].astype(str).str.lower()
+    print("Normalized classification columns to lowercase")
+    
     # Get unique question numbers
     question_numbers = df['question_number'].unique()
     
